@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
 data class NavItem(val icon: ImageVector, val route:String)
 
 
-
+// main content of the program
 @Composable
 fun MainContent() {
     //take use somewhere
