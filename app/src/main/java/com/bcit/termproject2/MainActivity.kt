@@ -66,6 +66,10 @@ import androidx.navigation.compose.rememberNavController
 import com.bcit.termproject2.ui.theme.TermProject2Theme
 
 class MainActivity : ComponentActivity() {
+    // Declaring db objects
+    private val db by lazy { Database.getInstance(applicationContext) }
+    private val repo by lazy { Repository(db.teamDao(), db.playerDao()) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
