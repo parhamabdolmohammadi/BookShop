@@ -1,6 +1,8 @@
 package com.bcit.termproject2
 
 import androidx.compose.runtime.toMutableStateList
+import org.slf4j.MDC.clear
+import java.util.Collections.addAll
 
 class PlayersState(private val repository: Repository) {
     var players = repository.getAllPlayers().toMutableStateList()
@@ -15,7 +17,7 @@ class PlayersState(private val repository: Repository) {
     }
     fun refreshPlayers() {
         clear()
-        addAll(repository.getAllPlayers())
+        addAll(mutableListOf(repository.getAllPlayers()))
     }
 }
 

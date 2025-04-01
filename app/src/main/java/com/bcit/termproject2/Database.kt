@@ -136,6 +136,8 @@ interface PlayerDao {
     @Query("SELECT * FROM players")
     fun getAllPlayers(): List<Player>
 
+    //get players by team and number
+
     @Delete
     fun delete(player: Player)
 
