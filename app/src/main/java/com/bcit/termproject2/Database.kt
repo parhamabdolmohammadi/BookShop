@@ -5,12 +5,16 @@ import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Delete
+import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.Relation
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.Transaction
 
 
 @Entity(tableName = "teams")
@@ -20,20 +24,36 @@ data class Team(
     val country: String,
     val wins: Int,
     val losses: Int,
-    val ties: Int,
-    val players: List<Player>
+    val ties: Int
 )
-@Entity(tableName = "players")
+@Entity(tableName = "players",
+    foreignKeys = [ForeignKey(
+        entity = Team::class,
+        parentColumns = arrayOf("id"),
+        childColumns = arrayOf("teamId"),
+        onDelete = ForeignKey.CASCADE
+    )])
 data class Player(
     @PrimaryKey(autoGenerate = true) val id: Int,
     val name: String,
     val position: String,
     val number: Int,
-    val team: String,
+    val teamId: Int,
     val country: String,
     val birthday: String,
     val goals: Int,
 )
+
+
+data class TeamWithPlayers(
+    @Embedded val team: Team,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "teamId"
+    )
+    val players: List<Player>
+)
+
 
 @Dao
 interface TeamDao {
@@ -78,11 +98,11 @@ interface PlayerDao {
     fun getPlayerByName(name: String): Player?
 
     //get player by team and position
-    @Query("SELECT * FROM players WHERE team = :team AND position = :position")
+    @Query("SELECT * FROM players WHERE teamId = :team AND position = :position")
     fun getPlayerByTeamAndPosition(team: String, position: String): Player?
 
     //get player by team
-    @Query("SELECT * FROM players WHERE team = :team")
+    @Query("SELECT * FROM players WHERE teamId = :team")
     fun getPlayerByTeam(team: String): Player?
 
     //get player by position
@@ -98,7 +118,7 @@ interface PlayerDao {
     fun getPlayerByCountry(country: String): Player?
 
     //get player by team and number
-    @Query("SELECT * FROM players WHERE team = :team AND number = :number")
+    @Query("SELECT * FROM players WHERE teamId = :team AND number = :number")
     fun getPlayerByTeamAndNumber(team: String, number: Int): Player?
 
     //get player by goals
@@ -118,6 +138,11 @@ interface PlayerDao {
 
     @Delete
     fun delete(player: Player)
+
+    @Transaction
+    @Query("SELECT * FROM teams WHERE id = :id")
+    fun getTeamWithPlayers(id: Int): TeamWithPlayers
+
 }
 
 @Database(entities = [Team::class, Player::class], version = 1)

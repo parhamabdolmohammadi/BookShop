@@ -70,10 +70,35 @@ class MainActivity : ComponentActivity() {
     private val db by lazy { Database.getInstance(applicationContext) }
     private val repo by lazy { Repository(db.teamDao(), db.playerDao()) }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+
+            if (repo.getAllTeams().isEmpty()) {
+                val mockPlayers = listOf(
+                    Player(0, "Lionel Messi", "Forward", 10, 0, "Argentina", "1987-06-24", 700),
+                    Player(0, "Neymar", "Forward", 11, 0, "Brazil", "1992-02-05", 400),
+                    Player(0, "Cristiano Ronaldo", "Forward", 7, 0, "Portugal", "1985-02-05", 800)
+                )
+
+                val team = Team(
+                    id = 0,
+                    name = "Barcelona",
+                    country = "Spain",
+                    wins = 30,
+                    losses = 5,
+                    ties = 3,
+                    players = listOf()
+                )
+
+                repo.insertTeam(team)
+
+                mockPlayers.forEach { player ->
+                    repo.insertPlayer(player.copy(teamId = team.id))
+                }
+            }
             MainContent()
         }
     }
