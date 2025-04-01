@@ -90,7 +90,6 @@ class MainActivity : ComponentActivity() {
                     wins = 30,
                     losses = 5,
                     ties = 3,
-                    players = listOf()
                 )
 
                 repo.insertTeam(team)

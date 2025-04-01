@@ -65,4 +65,9 @@ dependencies {
     // Room dependencies
     ksp("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
+
+    // Ktor dependencies for networking
+    implementation("io.ktpr:ktor-client-android:3.0.1")
+    implementation("io.ktor:ktor-client-content-negotiation:3.0.1")
+    implementation("io.ktor:ktor-serialization-gson:3.0.1")
 }
