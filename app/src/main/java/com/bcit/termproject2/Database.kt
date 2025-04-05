@@ -33,6 +33,7 @@ data class Team(
         childColumns = arrayOf("teamId"),
         onDelete = ForeignKey.CASCADE
     )])
+
 data class Player(
     @PrimaryKey(autoGenerate = true) val id: Int,
     val name: String,
