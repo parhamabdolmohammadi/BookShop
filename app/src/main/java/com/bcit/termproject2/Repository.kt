@@ -1,6 +1,6 @@
 package com.bcit.termproject2
 
-class Repository(private val teamDao: TeamDao, private val playerDao: PlayerDao) {
+class  Repository(private val teamDao: TeamDao, private val playerDao: PlayerDao) {
     fun getAllTeams(): List<Team> {
         return teamDao.getAllTeams()
     }
