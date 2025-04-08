@@ -96,6 +96,8 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import coil3.compose.AsyncImage
+import com.bcit.lecture10bby.data.com.bcit.termproject2.Book
+import com.bcit.lecture10bby.data.com.bcit.termproject2.Books
 
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
@@ -104,7 +106,7 @@ import java.nio.charset.StandardCharsets
 class MainActivity : ComponentActivity() {
     // Declaring db objects
     private val db by lazy { Database.getInstance(applicationContext) }
-    private val repo by lazy { Repository(db.teamDao(), db.playerDao()) }
+    private val repo by lazy { Repository(db.bookDao()) }
 
     val bookRepository by lazy {
         BookRepository(client)

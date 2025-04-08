@@ -26,7 +26,8 @@ data class SavedBook(
     val year: String?,
     val description: String?,
     val imageUrl: String?,
-    val listType: String // "READ", "READING", "WANT_TO_READ"
+    val listType: String, // "READ", "READING", "WANT_TO_READ"
+    val genre: String?,
 )
 
 @Dao
@@ -39,6 +40,26 @@ interface BookDao {
 
     @Delete
     suspend fun deleteBook(book: SavedBook)
+
+    @Query("SELECT * FROM saved_books WHERE id = :id")
+    suspend fun getBookById(id: String): SavedBook?
+
+    @Query("SELECT * FROM saved_books WHERE title = :title")
+    suspend fun getBookByTitle(title: String): SavedBook?
+
+    @Query("SELECT * FROM saved_books WHERE author = :author")
+    suspend fun getBooksByAuthor(author: String): List<SavedBook>
+
+    @Query("SELECT * FROM saved_books WHERE year = :year")
+    suspend fun getBooksByYear(year: String): List<SavedBook>
+
+    @Query("SELECT * FROM saved_books WHERE genre = :genre")
+    suspend fun getBooksByGenre(genre: String): List<SavedBook>
+
+    @Transaction
+    @Query("SELECT * FROM saved_books WHERE listType = :listType")
+    suspend fun getBooksInListType(listType: String): List<SavedBook>
+
 }
 
 @Database(entities = [SavedBook::class], version = 1)

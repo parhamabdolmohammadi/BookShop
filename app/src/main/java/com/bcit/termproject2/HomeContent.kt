@@ -33,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -63,7 +64,7 @@ fun HomeContent(navController: NavController, bookRepository: BookRepository) {
     ) {
         LibraryCard(navController)
         Spacer(modifier = Modifier.height(16.dp))
-        MyBooksCard()
+        MyBooksCard(navController)
         Spacer(modifier = Modifier.height(16.dp))
         RecommendedSection(bookRepository)
     }
@@ -257,7 +258,7 @@ fun LibraryCard(navController: NavController) {
 }
 
 @Composable
-fun MyBooksCard() {
+fun MyBooksCard(navController: NavController) {
     var showSubBoxes = remember { mutableStateOf(false) }
 
     Box(
@@ -304,11 +305,17 @@ fun MyBooksCard() {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 if (showSubBoxes.value) {
-                    SubBooks("Read", Color(0xA64CAF59))
+                    SubBooks("Read", Color(0xA64CAF59)) {
+                        navController.navigate("list/Read")
+                    }
                     Spacer(modifier = Modifier.height(16.dp))
-                    SubBooks("Reading", Color(0xA64C84AF))
+                    SubBooks("Reading", Color(0xA64C84AF)) {
+                        navController.navigate("list/Reading")
+                    }
                     Spacer(modifier = Modifier.height(16.dp))
-                    SubBooks("Want To Read", Color(0xA6AFAA4C))
+                    SubBooks("Want To Read", Color(0xA6AFAA4C)) {
+                        navController.navigate("list/WantToRead")
+                    }
                 }
             }
         }
@@ -317,14 +324,15 @@ fun MyBooksCard() {
 
 
 @Composable
-fun SubBooks(label: String, color: Color) {
+fun SubBooks(label: String, color: Color, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .padding(horizontal = 4.dp)
             .fillMaxWidth()
             .height(100.dp)
             .clip(RoundedCornerShape(20.dp))
-            .background(color),
+            .background(color)
+            .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -334,4 +342,5 @@ fun SubBooks(label: String, color: Color) {
         )
     }
 }
+
 
