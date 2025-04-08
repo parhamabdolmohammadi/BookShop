@@ -17,7 +17,7 @@ class BookRepository(private val httpClient: HttpClient, private val context: an
         val queries = context.resources.getStringArray(R.array.queries).toList()
         val randomNumber = (0..queries.size).random()
 
-        val response = httpClient.get(BASE_URL.format(queries[randomNumber])+"&orderBy=relevance")
+        val response = httpClient.get(BASE_URL.format(queries[randomNumber]))
 
         val json = response.body<JsonObject>().toString()
 
@@ -25,11 +25,16 @@ class BookRepository(private val httpClient: HttpClient, private val context: an
     }
 
     suspend fun getBook(str : String) : BooksResponse? {
-        val response = httpClient.get(BASE_URL.format(str))
+        return try {
+            val response = httpClient.get(BASE_URL.format(str))
 
-        val json = response.body<JsonObject>().toString()
+            val json = response.body<JsonObject>().toString()
 
-        return Gson().fromJson(json, BooksResponse::class.java)
+            return Gson().fromJson(json, BooksResponse::class.java)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 
 

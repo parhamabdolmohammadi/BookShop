@@ -4,7 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.bcit.lecture10bby.data.com.bcit.termproject2.data.BookRepository
 import com.bcit.lecture10bby.data.com.bcit.termproject2.data.BooksResponse
@@ -35,9 +34,12 @@ class BookState(private val repository: BookRepository): ViewModel() {
         viewModelScope.launch {
             searchFlow
                 .debounce(1000L)
-                .collect {
-                    bookResponse = repository.search(it)
+                .collect { query ->
+                    if (query.isNotBlank()) {
+                        bookResponse = repository.search(query)
+                    }
                 }
+
         }
     }
 
