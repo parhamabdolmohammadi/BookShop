@@ -1,4 +1,4 @@
-package com.bcit.termproject2
+package com.bcit.lecture10bby.data.com.bcit.termproject2.data
 
 class Repository(private val dao: BookDao) {
     suspend fun addBook(book: SavedBook) = dao.insertBook(book)

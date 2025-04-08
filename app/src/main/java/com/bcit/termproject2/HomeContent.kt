@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -22,6 +23,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.LibraryAdd
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -29,13 +32,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -48,6 +55,9 @@ import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.bcit.lecture10bby.data.com.bcit.termproject2.BookState
 import com.bcit.lecture10bby.data.com.bcit.termproject2.data.BookRepository
+import com.bcit.lecture10bby.data.com.bcit.termproject2.data.Database
+import com.bcit.lecture10bby.data.com.bcit.termproject2.data.SavedBook
+import kotlinx.coroutines.launch
 
 //Home cLASS
 
@@ -132,6 +142,7 @@ fun RecommendedSection(bookRepository: BookRepository) {
 
 @Composable
 fun ImageBox(title: String, publishedDate: String, authors: String, image: String) {
+    var showDialog by remember { mutableStateOf(false) }
     Column(
         horizontalAlignment = Alignment.Start,
         modifier = Modifier
@@ -199,10 +210,10 @@ fun ImageBox(title: String, publishedDate: String, authors: String, image: Strin
                     horizontalArrangement = Arrangement.End
                 ) {
                     Button(
-                        onClick = { println("Add $title") },
+                        onClick = { showDialog = true },
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF9C27B0)
+                            containerColor = Color(0xFF009644)
                         ),
                         border = BorderStroke(1.dp, Color.DarkGray),
                         modifier = Modifier.padding(8.dp)
@@ -214,6 +225,62 @@ fun ImageBox(title: String, publishedDate: String, authors: String, image: Strin
             }
         }
     }
+    if (showDialog) {
+        AddToListDialog(
+            title = title,
+            author = authors,
+            year = publishedDate,
+            imageUrl = image,
+            onDismiss = { showDialog = false }
+        )
+    }
+}
+
+@Composable
+fun AddToListDialog(
+    title: String,
+    author: String,
+    year: String?,
+    imageUrl: String?,
+    onDismiss: () -> Unit
+) {
+    val context = LocalContext.current
+    val db = Database.getInstance(context)
+    val scope = rememberCoroutineScope()
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {},
+        title = {Icon(Icons.Default.LibraryAdd, contentDescription = "Add", tint = Color(0xFF009644))
+            Text("Add to List", modifier = Modifier.padding(start = 30.dp), color = Color.Green, fontWeight = FontWeight.Bold) },
+        text = {
+            Column {
+                listOf("Read", "Reading", "WantToRead").forEach { listType ->
+                    Button(
+                        onClick = {
+                            val savedBook = SavedBook(
+                                title = title,
+                                author = author,
+                                year = year,
+                                description = "",
+                                imageUrl = imageUrl,
+                                listType = listType,
+                                genre = null
+                            )
+
+                            scope.launch {
+                                db.bookDao().insertBook(savedBook)
+                                onDismiss()
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
+                    ) {
+                        Text("Add to $listType")
+                    }
+                }
+            }
+        }
+    )
 }
 
 
@@ -252,6 +319,7 @@ fun LibraryCard(navController: NavController) {
 
                 Text("Library", fontSize = 40.sp, color = Color.White,  fontWeight = FontWeight.Bold,  modifier = Modifier.align(
                     Alignment.Center) )
+
             }
         }
     }
@@ -301,7 +369,6 @@ fun MyBooksCard(navController: NavController) {
                     color = Color.Black,
                     fontWeight = FontWeight.Bold,
                 )
-
                 Spacer(modifier = Modifier.height(16.dp))
 
                 if (showSubBoxes.value) {
