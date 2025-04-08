@@ -10,10 +10,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -31,15 +31,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -139,17 +138,19 @@ fun RecommendedSection(bookRepository: BookRepository) {
         }
     }
 }
-
 @Composable
 fun ImageBox(title: String, publishedDate: String, authors: String, image: String) {
     var showDialog by remember { mutableStateOf(false) }
+    val scrollState = rememberScrollState()
+
     Column(
         horizontalAlignment = Alignment.Start,
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
     ) {
-        Row {
+        Row(modifier = Modifier.fillMaxSize()) {
+            // Book cover
             if (image.isNotBlank() && image.startsWith("https://")) {
                 AsyncImage(
                     model = image,
@@ -171,60 +172,67 @@ fun ImageBox(title: String, publishedDate: String, authors: String, image: Strin
             }
 
             Spacer(modifier = Modifier.width(15.dp))
-            val scrollState = rememberScrollState()
 
-            Column {
-                Text(
-                    buildAnnotatedString {
+            // Scrollable content
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f)
+                    .verticalScroll(scrollState)
+            ) {
+                Column {
+                    Text(
+                        buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("Title: ")
+                            }
+                            append(title)
+                        },
+                        fontSize = 14.sp,
+                    )
+
+                    Spacer(modifier = Modifier.height(7.dp))
+
+                    Text(buildAnnotatedString {
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Title: ")
+                            append("Published Date: ")
                         }
-                        append(title)
-                    },
-                    fontSize = 14.sp,
-                    modifier = Modifier.verticalScroll(scrollState)
-                )
+                        append(publishedDate)
+                    })
 
-                Spacer(modifier = Modifier.height(7.dp))
+                    Spacer(modifier = Modifier.height(7.dp))
 
-                Text(buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append("Published Date: ")
-                    }
-                    append(publishedDate)
-                })
+                    Text(buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append("Authors: ")
+                        }
+                        append(authors)
+                    })
 
-                Spacer(modifier = Modifier.height(7.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                Text(buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append("Authors: ")
-                    }
-                    append(authors)
-                })
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    Button(
-                        onClick = { showDialog = true },
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF009644)
-                        ),
-                        border = BorderStroke(1.dp, Color.DarkGray),
-                        modifier = Modifier.padding(8.dp)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
                     ) {
-                        Icon(Icons.Default.Add, contentDescription = "Add")
-                        Text("Add", modifier = Modifier.padding(start = 8.dp))
+                        Button(
+                            onClick = { showDialog = true },
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF009644)
+                            ),
+                            border = BorderStroke(1.dp, Color.DarkGray),
+                            modifier = Modifier.padding(top = 8.dp)
+                        ) {
+                            Icon(Icons.Default.Add, contentDescription = "Add")
+                            Text("Add", modifier = Modifier.padding(start = 8.dp))
+                        }
                     }
                 }
             }
         }
     }
+
     if (showDialog) {
         AddToListDialog(
             title = title,
@@ -235,6 +243,7 @@ fun ImageBox(title: String, publishedDate: String, authors: String, image: Strin
         )
     }
 }
+
 
 @Composable
 fun AddToListDialog(
@@ -275,7 +284,12 @@ fun AddToListDialog(
                         },
                         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
                     ) {
-                        Text("Add to $listType")
+                        val label = when (listType) {
+                            "WantToRead" -> "Want To Read"
+                            else -> listType
+                        }
+                        Text("Add to $label")
+
                     }
                 }
             }
@@ -313,7 +327,7 @@ fun LibraryCard(navController: NavController) {
                     painter = painterResource(id = R.drawable.library_main),
                     contentDescription = null,
                     modifier = Modifier
-                        .fillMaxWidth()// Optional: define size of the image
+                        .fillMaxWidth()
                         .clip(RoundedCornerShape(10.dp))
                 )
 
