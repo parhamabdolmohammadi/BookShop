@@ -3,6 +3,8 @@ package com.bcit.termproject2
 
 
 //operation done
+
+
 import Library
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -16,7 +18,6 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Book
-import androidx.compose.material.icons.outlined.SportsSoccer
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -38,16 +39,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.bcit.lecture10bby.data.com.bcit.termproject2.BookState
-
-
-
-import com.bcit.lecture10bby.data.com.bcit.termproject2.data.BookRepository
-import com.bcit.lecture10bby.data.com.bcit.termproject2.data.client
 import com.bcit.lecture10bby.data.com.bcit.termproject2.Book
+import com.bcit.lecture10bby.data.com.bcit.termproject2.BookListScreen
+import com.bcit.lecture10bby.data.com.bcit.termproject2.BookState
 import com.bcit.lecture10bby.data.com.bcit.termproject2.Books
+import com.bcit.lecture10bby.data.com.bcit.termproject2.data.BookRepository
 import com.bcit.lecture10bby.data.com.bcit.termproject2.data.Database
 import com.bcit.lecture10bby.data.com.bcit.termproject2.data.Repository
+import com.bcit.lecture10bby.data.com.bcit.termproject2.data.client
 import com.bcit.termproject2.ui.theme.TermProject2Theme
 
 class MainActivity : ComponentActivity() {
@@ -146,6 +145,10 @@ fun MainContent(bookRepository: BookRepository) {
                 Book(title = title, author = author, year = year, description = description, image = image2)
             }
 
+            composable("list/{type}") { backStackEntry ->
+                val type = backStackEntry.arguments?.getString("type") ?: "Read"
+                BookListScreen(listType = type)
+            }
 
 
             //destination4
