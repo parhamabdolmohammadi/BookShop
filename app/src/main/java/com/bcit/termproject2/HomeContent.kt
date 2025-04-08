@@ -113,7 +113,7 @@ fun RecommendedSection(bookRepository: BookRepository) {
                     .width(75.dp)
                     .height(75.dp)
             )
-            Text("Recommended", fontSize = 20.sp)
+            Text("Recommended", fontSize = 24.sp, fontWeight = FontWeight.Bold)
         }
 
 

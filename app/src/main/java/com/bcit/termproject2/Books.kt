@@ -27,6 +27,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -42,6 +46,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.bcit.lecture10bby.data.com.bcit.termproject2.data.BookRepository
+import com.bcit.termproject2.AddToListDialog
 import com.bcit.termproject2.R
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -73,7 +78,7 @@ fun Books(navController: NavController, bookRepository: BookRepository, query: S
                 modifier = Modifier
                     .padding(15.dp)
                     .clip(RoundedCornerShape(20.dp))
-                    .background(color = Color(0xA64CAF59))
+                    .background(color = Color(0x4600C7FF))
                     .fillMaxWidth()
                     .height(150.dp)
                     .clickable {
@@ -150,16 +155,34 @@ fun Books(navController: NavController, bookRepository: BookRepository, query: S
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.End
                             ) {
+                                var showDialog by remember { mutableStateOf(false) }
+
                                 Button(
-                                    onClick = { println("Add ${book?.info?.title}") },
+                                    onClick = { showDialog = true },
                                     shape = RoundedCornerShape(12.dp),
-                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF9C27B0)),
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF009644)),
                                     border = BorderStroke(1.dp, Color.DarkGray),
                                     modifier = Modifier.padding(8.dp)
                                 ) {
                                     Icon(Icons.Default.Add, contentDescription = "Add")
                                     Text("Add", modifier = Modifier.padding(start = 8.dp))
                                 }
+
+                                if (showDialog && book != null) {
+                                    val title = book.info?.title ?: "Unknown"
+                                    val authors = book.info?.authors?.joinToString(", ") ?: "Unknown"
+                                    val year = book.info?.publishedDate ?: "Unknown"
+                                    val imageUrl = book.info?.imageLinks?.thumbnail?.replace("http://", "https://")
+
+                                    AddToListDialog(
+                                        title = title,
+                                        author = authors,
+                                        year = year,
+                                        imageUrl = imageUrl,
+                                        onDismiss = { showDialog = false }
+                                    )
+                                }
+
                             }
                         }
                     }
