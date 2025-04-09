@@ -6,6 +6,7 @@ package com.bcit.termproject2
 
 
 import Library
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,8 +28,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -119,10 +124,6 @@ fun MainContent(bookRepository: BookRepository) {
                 Library(navController, bookRepository)
             }
 
-
-//            composable("books", ) {
-//                Books(navController, bookRepository)
-//            }
             composable("books/{query}") { backStackEntry ->
                 val query = backStackEntry.arguments?.getString("query") ?: ""
                 println("we've got ${query}")
@@ -159,7 +160,8 @@ fun MainContent(bookRepository: BookRepository) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyTopBar(navController: NavController) {
+fun MyTopBar(navController: NavController, context: Context = LocalContext.current) {
+    var showCopyDialog by remember { mutableStateOf(false) }
 
 
     CenterAlignedTopAppBar(
@@ -173,12 +175,22 @@ fun MyTopBar(navController: NavController) {
             }
         },
         actions = {
-            IconButton(onClick = { }) {
-                Icon(Icons.Outlined.Book, contentDescription = "Ball")
+            IconButton(onClick = { showCopyDialog = true }) {
+                Icon(Icons.Outlined.Book, contentDescription = "Copy Book Lists")
             }
         },
         scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     )
+    if (showCopyDialog) {
+        CopyListDialog(
+            onDismiss = { showCopyDialog = false },
+            onCopy = { selectedListType ->
+                copyBooksToClipboard(context = context, listType = selectedListType)
+                showCopyDialog = false
+            }
+        )
+    }
+
 }
 
 
