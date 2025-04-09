@@ -40,6 +40,7 @@ Inspired by Goodreads, but with a focus on simplicity and ease of use.
     - **Reading**
     - **Want To Read**
 - Styled modal with one-click selection
+- **Toast feedback** when added
 
 ### 🗃️ My Books Collection
 - Navigate to your saved lists via:
@@ -57,6 +58,15 @@ Inspired by Goodreads, but with a focus on simplicity and ease of use.
 
 ### 🚫 Duplicate Prevention
 - Prevents adding the same book to the same list more than once
+
+### 📋 Copy to Clipboard ✅
+- Use the top-right menu to copy books from a list (or all) to clipboard
+- Output is formatted as:
+
+```
+📚 List Name:
+Book Title - Author(s) - Year
+```
 
 ---
 

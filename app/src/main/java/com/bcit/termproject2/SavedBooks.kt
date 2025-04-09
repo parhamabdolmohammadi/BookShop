@@ -1,6 +1,7 @@
 package com.bcit.lecture10bby.data.com.bcit.termproject2
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -123,6 +124,7 @@ fun BookListScreen(
                         coroutineScope.launch {
                             db.bookDao().deleteBook(toDelete)
                             books = db.bookDao().getBooksByListType(listType)
+                            Toast.makeText(context, "\"${toDelete.title}\" deleted.", Toast.LENGTH_SHORT).show()
                         }
                     })
                 }
@@ -146,6 +148,8 @@ fun BookListItem(book: SavedBook, onDelete: (SavedBook) -> Unit) {
                 AsyncImage(
                     model = book.imageUrl,
                     contentDescription = null,
+                    error = painterResource(id = com.bcit.termproject2.R.drawable.book_cover),
+                    fallback = painterResource(id = com.bcit.termproject2.R.drawable.book_cover),
                     modifier = Modifier
                         .height(120.dp)
                         .width(90.dp),

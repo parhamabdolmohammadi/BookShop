@@ -1,5 +1,6 @@
 package com.bcit.lecture10bby.data.com.bcit.termproject2
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.bcit.lecture10bby.data.com.bcit.termproject2.data.Database
 import com.bcit.lecture10bby.data.com.bcit.termproject2.data.SavedBook
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun AddToListButton(
@@ -92,8 +94,13 @@ fun AddToListButton(
 
                                     if (!exists) {
                                         db.bookDao().insertBook(savedBook)
+                                        withContext(kotlinx.coroutines.Dispatchers.Main) {
+                                            Toast.makeText(context, "Added to $label", Toast.LENGTH_SHORT).show()
+                                        }
                                     } else {
-                                        println("Book is already in $label list.")
+                                        withContext(kotlinx.coroutines.Dispatchers.Main) {
+                                            Toast.makeText(context, "Already in $label", Toast.LENGTH_SHORT).show()
+                                        }
                                     }
                                 }
                             },

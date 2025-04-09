@@ -90,6 +90,9 @@ fun Books(navController: NavController, bookRepository: BookRepository, query: S
                         AsyncImage(
                             model = imageUrl,
                             contentDescription = null,
+                            placeholder = painterResource(id = com.bcit.termproject2.R.drawable.book_cover_alt),
+                            error = painterResource(id = com.bcit.termproject2.R.drawable.book_cover),
+                            fallback = painterResource(id = com.bcit.termproject2.R.drawable.book_cover),
                             modifier = Modifier
                                 .padding(10.dp)
                                 .width(95.dp)

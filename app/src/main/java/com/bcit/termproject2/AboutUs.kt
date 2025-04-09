@@ -70,6 +70,11 @@ fun AboutUsScreen() {
         Feature("🗑️ Remove Books", "Delete from lists with confirmation.")
         Feature("💾 Local Persistence", "Saved using Room database — no login needed.")
         Feature("🚫 Duplicate Prevention", "Avoids adding duplicates to the same list.")
+        Feature("📋 Copy to Clipboard", "Copy saved books from any list (or all) via the top toolbar.")
+        Feature("📲 Shareable Format", "Copied content is formatted with list names, book titles, authors, and years.")
+        Feature("📣 Toast Notifications", "Get feedback when adding or copying books.")
+        Feature("🎨 Custom Icon & Theme", "The app features a custom launcher icon and consistent styling using Material 3.")
+
 
         Spacer(modifier = Modifier.height(24.dp))
         SectionTitle("🌍 Language-Agnostic")
