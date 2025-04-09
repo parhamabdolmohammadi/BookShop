@@ -1,7 +1,6 @@
 package com.bcit.termproject2
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,27 +20,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.LibraryAdd
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -52,11 +42,11 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
+import com.bcit.lecture10bby.data.com.bcit.termproject2.AddToListButton
 import com.bcit.lecture10bby.data.com.bcit.termproject2.BookState
 import com.bcit.lecture10bby.data.com.bcit.termproject2.data.BookRepository
-import com.bcit.lecture10bby.data.com.bcit.termproject2.data.Database
-import com.bcit.lecture10bby.data.com.bcit.termproject2.data.SavedBook
-import kotlinx.coroutines.launch
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 //Home cLASS
 
@@ -75,13 +65,13 @@ fun HomeContent(navController: NavController, bookRepository: BookRepository) {
         Spacer(modifier = Modifier.height(16.dp))
         MyBooksCard(navController)
         Spacer(modifier = Modifier.height(16.dp))
-        RecommendedSection(bookRepository)
+        RecommendedSection(navController, bookRepository)
     }
 }
 
 
 @Composable
-fun RecommendedSection(bookRepository: BookRepository) {
+fun RecommendedSection(navController: NavController, bookRepository: BookRepository) {
     val bookState = viewModel {
         BookState(bookRepository)
     }
@@ -131,7 +121,7 @@ fun RecommendedSection(bookRepository: BookRepository) {
 
 
 //                    val bookAuthor = bookInfo?.authors? : "";
-                    ImageBox(bookTitle, publishedDate, authors, image.toString())
+                    ImageBox(bookTitle, publishedDate, authors, image.toString(), navController)
                     Spacer(modifier = Modifier.height(15.dp))
                 }
             }
@@ -139,7 +129,11 @@ fun RecommendedSection(bookRepository: BookRepository) {
     }
 }
 @Composable
-fun ImageBox(title: String, publishedDate: String, authors: String, image: String) {
+fun ImageBox(title: String,
+             publishedDate: String,
+             authors: String,
+             image: String,
+             navController: NavController) {
     var showDialog by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
 
@@ -148,6 +142,15 @@ fun ImageBox(title: String, publishedDate: String, authors: String, image: Strin
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
+            .clickable {
+                val encodedImage = if (image.isNotBlank()) {
+                    URLEncoder.encode(image, StandardCharsets.UTF_8.toString())
+                } else {
+                    "null"
+                }
+
+                navController.navigate("book/${title}/${authors}/${publishedDate}/${title}/${encodedImage}")
+            }
     ) {
         Row(modifier = Modifier.fillMaxSize()) {
             // Book cover
@@ -211,92 +214,22 @@ fun ImageBox(title: String, publishedDate: String, authors: String, image: Strin
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        Button(
-                            onClick = { showDialog = true },
-                            shape = RoundedCornerShape(12.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF009644)
-                            ),
-                            border = BorderStroke(1.dp, Color.DarkGray),
-                            modifier = Modifier.padding(top = 8.dp)
-                        ) {
-                            Icon(Icons.Default.Add, contentDescription = "Add")
-                            Text("Add", modifier = Modifier.padding(start = 8.dp))
-                        }
-                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    AddToListButton(
+                        title = title,
+                        author = authors,
+                        year = publishedDate,
+                        description = "",
+                        imageUrl = if (image.isNotBlank()) image else null
+                    )
+
                 }
             }
         }
     }
 
-    if (showDialog) {
-        AddToListDialog(
-            title = title,
-            author = authors,
-            year = publishedDate,
-            imageUrl = image,
-            onDismiss = { showDialog = false }
-        )
-    }
 }
-
-
-@Composable
-fun AddToListDialog(
-    title: String,
-    author: String,
-    year: String?,
-    imageUrl: String?,
-    onDismiss: () -> Unit
-) {
-    val context = LocalContext.current
-    val db = Database.getInstance(context)
-    val scope = rememberCoroutineScope()
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {},
-        title = {Icon(Icons.Default.LibraryAdd, contentDescription = "Add", tint = Color(0xFF009644))
-            Text("Add to List", modifier = Modifier.padding(start = 30.dp), color = Color.Green, fontWeight = FontWeight.Bold) },
-        text = {
-            Column {
-                listOf("Read", "Reading", "WantToRead").forEach { listType ->
-                    Button(
-                        onClick = {
-                            val savedBook = SavedBook(
-                                title = title,
-                                author = author,
-                                year = year,
-                                description = "",
-                                imageUrl = imageUrl,
-                                listType = listType,
-                                genre = null
-                            )
-
-                            scope.launch {
-                                db.bookDao().insertBook(savedBook)
-                                onDismiss()
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
-                    ) {
-                        val label = when (listType) {
-                            "WantToRead" -> "Want To Read"
-                            else -> listType
-                        }
-                        Text("Add to $label")
-
-                    }
-                }
-            }
-        }
-    )
-}
-
 
 
 @Composable
@@ -382,6 +315,7 @@ fun MyBooksCard(navController: NavController) {
                     fontSize = 40.sp,
                     color = Color.Black,
                     fontWeight = FontWeight.Bold,
+                    modifier = Modifier.background(Color(0xA8FFFFFF))
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
