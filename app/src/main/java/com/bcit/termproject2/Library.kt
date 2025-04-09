@@ -39,10 +39,10 @@ import com.bcit.termproject2.R
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
-//Library Class
-
-//library placeholder
-
+/**
+ * Danton Soares - A01351419
+ * Parham Abdolmohammadi - A01356970
+ */
 
 @Composable
 fun Library(navController: NavController, bookRepository: BookRepository) {

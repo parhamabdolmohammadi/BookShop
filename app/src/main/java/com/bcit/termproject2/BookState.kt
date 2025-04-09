@@ -11,6 +11,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
+/**
+ * Danton Soares - A01351419
+ * Parham Abdolmohammadi - A01356970
+ */
 
 class BookState(private val repository: BookRepository): ViewModel() {
 

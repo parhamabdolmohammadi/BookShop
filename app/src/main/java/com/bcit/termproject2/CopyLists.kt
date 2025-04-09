@@ -20,6 +20,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * Danton Soares - A01351419
+ * Parham Abdolmohammadi - A01356970
+ */
+
 @Composable
 fun CopyListDialog(onDismiss: () -> Unit, onCopy: (String) -> Unit) {
     AlertDialog(

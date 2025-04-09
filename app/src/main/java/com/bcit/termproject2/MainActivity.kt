@@ -34,6 +34,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -50,6 +52,11 @@ import com.bcit.lecture10bby.data.com.bcit.termproject2.data.Database
 import com.bcit.lecture10bby.data.com.bcit.termproject2.data.Repository
 import com.bcit.lecture10bby.data.com.bcit.termproject2.data.client
 import com.bcit.termproject2.ui.theme.TermProject2Theme
+
+/**
+ * Danton Soares - A01351419
+ * Parham Abdolmohammadi - A01356970
+ */
 
 class MainActivity : ComponentActivity() {
     // Declaring db objects
@@ -166,7 +173,7 @@ fun MyTopBar(navController: NavController, context: Context = LocalContext.curre
 
     CenterAlignedTopAppBar(
         title = {
-            Text(text = "BestReads", fontSize = 20.sp)
+            Text(text = "BestReads", fontSize = 24.sp, fontFamily = FontFamily.Cursive, fontWeight = FontWeight.Bold)
 
         },
         navigationIcon = {

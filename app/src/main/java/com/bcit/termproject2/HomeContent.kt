@@ -53,7 +53,10 @@ import com.bcit.lecture10bby.data.com.bcit.termproject2.data.BookRepository
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
-//Home cLASS
+/**
+ * Danton Soares - A01351419
+ * Parham Abdolmohammadi - A01356970
+ */
 
 @Composable
 fun HomeContent(navController: NavController, bookRepository: BookRepository) {

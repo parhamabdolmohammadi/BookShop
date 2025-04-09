@@ -25,6 +25,10 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.bcit.termproject2.R
 
+/**
+ * Danton Soares - A01351419
+ * Parham Abdolmohammadi - A01356970
+ */
 
 @Composable
 fun Book(title: String?, author: String?, year: String?, description: String?, image: String?) {
