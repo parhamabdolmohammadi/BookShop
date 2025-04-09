@@ -1,8 +1,9 @@
 
-# 📚 BookShelf App
+# 📚 BestReads
 
 A mobile app for discovering, saving, and organizing your reading journey — powered by the [Google Books API](https://developers.google.com/books).  
 Built with **Kotlin**, **Jetpack Compose**, and **Room** — this app delivers a smooth, modern, and personalized reading experience.
+Inspired by Goodreads, but with a focus on simplicity and ease of use.
 
 ---
 

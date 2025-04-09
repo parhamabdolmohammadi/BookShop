@@ -20,6 +20,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BookmarkAdd
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -96,7 +101,7 @@ fun RecommendedSection(navController: NavController, bookRepository: BookReposit
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.recommened_image),
+                painter = painterResource(id = R.drawable.book_stack),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -105,7 +110,6 @@ fun RecommendedSection(navController: NavController, bookRepository: BookReposit
             )
             Text("Recommended", fontSize = 24.sp, fontWeight = FontWeight.Bold)
         }
-
 
 
         Box(modifier = Modifier.height(800.dp)) {
@@ -340,6 +344,13 @@ fun MyBooksCard(navController: NavController) {
 
 @Composable
 fun SubBooks(label: String, color: Color, onClick: () -> Unit) {
+    val icon = when (label) {
+        "Read" -> Icons.Default.Done
+        "Reading" -> Icons.Default.MenuBook
+        "Want To Read" -> Icons.Default.BookmarkAdd
+        else -> Icons.Default.MenuBook
+    }
+
     Box(
         modifier = Modifier
             .padding(horizontal = 4.dp)
@@ -350,11 +361,17 @@ fun SubBooks(label: String, color: Color, onClick: () -> Unit) {
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = label,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Icon(imageVector = icon, contentDescription = label, tint = Color.Black)
+            Text(
+                text = label,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
 
