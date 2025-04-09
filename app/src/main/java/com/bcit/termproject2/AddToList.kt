@@ -4,9 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -52,9 +50,7 @@ fun AddToListButton(
         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF009644)),
         border = BorderStroke(1.dp, Color.DarkGray),
         modifier = Modifier
-            .padding(8.dp)
-            .height(70.dp)
-            .width(170.dp)
+            .padding(8.dp,0.dp,8.dp,8.dp)
     ) {
         Icon(Icons.Default.Add, contentDescription = "Add")
         Text("Add", modifier = Modifier.padding(start = 8.dp))
@@ -103,7 +99,7 @@ fun AddToListButton(
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 4.dp)
+                                .padding(top = 8.dp)
                         ) {
                             Text("Add to $label")
                         }

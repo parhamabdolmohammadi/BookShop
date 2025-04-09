@@ -148,7 +148,6 @@ fun MainContent(bookRepository: BookRepository) {
             }
 
 
-            //destination4
             composable("more"){
                 AboutUsScreen()
             }

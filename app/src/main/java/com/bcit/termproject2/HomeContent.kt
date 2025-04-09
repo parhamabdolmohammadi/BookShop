@@ -217,17 +217,18 @@ fun ImageBox(title: String,
                     })
 
                     Spacer(modifier = Modifier.height(8.dp))
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    AddToListButton(
-                        title = title,
-                        author = authors,
-                        year = publishedDate,
-                        description = "",
-                        imageUrl = if (image.isNotBlank()) image else null
-                    )
-
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        AddToListButton(
+                            title = title,
+                            author = authors,
+                            year = publishedDate,
+                            description = "",
+                            imageUrl = if (image.isNotBlank()) image else null
+                        )
+                    }
                 }
             }
         }
